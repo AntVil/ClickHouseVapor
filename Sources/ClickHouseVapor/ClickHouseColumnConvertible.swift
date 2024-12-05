@@ -7,9 +7,7 @@
 
 import ClickHouseNIO
 
-
-
-/// Define how a colun can be converted into a clickhose datatype
+/// Define how a column can be converted into a clickhouse datatype
 public protocol ClickHouseColumnConvertible: AnyObject {
     var key: String { get }
     var isPrimary: Bool { get }
@@ -33,7 +31,6 @@ public protocol ClickHouseColumnConvertibleTyped: ClickHouseColumnConvertible {
     associatedtype Value: ClickHouseDataType
     var wrappedValue: [Value] { get set }
     var columnMetadata: ClickHouseColumnMetadata? { get }
-
 }
 
 extension ClickHouseColumnConvertibleTyped {
@@ -89,7 +86,6 @@ public final class Field<Value: ClickHouseDataType>: ClickHouseColumnConvertible
         self
     }
 
-
     fileprivate init(
         key: String,
         isPrimary: Bool = false,
@@ -143,6 +139,7 @@ public extension Field where Value == ClickHouseDateTime {
         self.init(key: key, isPrimary: isPrimary, isOrderBy: isOrderBy, isLowCardinality: isLowCardinality, columnMetadata: .dateTimeTimeZone(timeZone))
     }
 }
+
 public extension Field where Value == ClickHouseDateTime64 {
     convenience init(
         key: String,
@@ -164,6 +161,7 @@ public extension Field where Value == ClickHouseDateTime64 {
         fatalError("missing precision for DateTime64")
     }
 }
+
 public extension Field where Value == ClickHouseEnum8 {
     convenience init(
         key: String,
@@ -184,6 +182,7 @@ public extension Field where Value == ClickHouseEnum8 {
         fatalError("missing enum-mapping for enum8")
     }
 }
+
 public extension Field where Value == ClickHouseEnum16 {
     convenience init(
         key: String,
@@ -209,7 +208,7 @@ extension Array {
     /// Only include column rows where the isIncluded array is true
     func filtered(_ isIncluded: [Bool]) -> Self {
         precondition(count == isIncluded.count)
-        var arr = Self.init()
+        var arr = Self()
         let count = isIncluded.reduce(0, { $0 + ($1 ? 1 : 0) })
         arr.reserveCapacity(count)
         for (i, include) in isIncluded.enumerated() where include {
